@@ -88,6 +88,10 @@ export type StopReason = "stop" | "length" | "toolUse" | "error" | "aborted";
 export interface StreamOptions {
     signal?: AbortSignal;
     apiKey?: string;
+    /** Number of retries after a failed attempt that produced no stream events. Defaults to 2. */
+    maxRetries?: number;
+    /** Initial delay in milliseconds between retries. Defaults to 250. */
+    retryDelayMs?: number;
 }
 
 // --- stream events ---
