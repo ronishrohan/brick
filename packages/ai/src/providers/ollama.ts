@@ -1,9 +1,14 @@
 import type { Model } from "../types.js";
 
-export function ollamaModel(id: string, baseUrl?: string): Model {
+export interface OllamaConfig {
+    id: string;
+    baseUrl?: string;
+}
+
+export function ollamaModel(config: OllamaConfig): Model {
     return {
         provider: "ollama",
-        id,
-        baseUrl: baseUrl ?? process.env.OLLAMA_HOST ?? "http://localhost:11434",
+        id: config.id,
+        baseUrl: config.baseUrl ?? process.env.OLLAMA_HOST ?? "http://localhost:11434",
     };
 }

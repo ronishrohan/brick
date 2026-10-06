@@ -22,3 +22,4 @@ export { warmupModel } from "./warmup.js";
 export type { StreamHandle } from "./stream.js";
 export { validateToolCall } from "./validate.js";
 export { ollamaModel, openaiModel } from "./providers/index.js";
+export type { OllamaConfig } from "./providers/index.js";

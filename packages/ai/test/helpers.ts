@@ -13,7 +13,7 @@ export function getOllamaEnv(): OllamaEnv | null {
     const host = process.env.OLLAMA_HOST;
     if (!host) return null;
     const modelId = process.env.OLLAMA_MODEL ?? "qwen2.5-coder:1.5b";
-    return { model: ollamaModel(modelId, host) };
+    return { model: ollamaModel({ id: modelId, baseUrl: host }) };
 }
 
 export function skip(reason: string): never {
