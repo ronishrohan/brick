@@ -49,5 +49,7 @@ export async function loadConfig(overrides?: { model?: string }): Promise<BrickC
 export async function buildModel(args: Pick<ParsedArgs, "model">): Promise<Model> {
     const config = await loadConfig(args.model !== undefined ? { model: args.model } : undefined);
     const { provider, id } = parseModelString(config.defaultModel);
-    return provider === "openai" ? openaiModel(id) : ollamaModel(id, config.ollamaHost);
+    return provider === "openai"
+        ? openaiModel(id)
+        : ollamaModel({ id, baseUrl: config.ollamaHost });
 }

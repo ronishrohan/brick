@@ -11,6 +11,7 @@ import { buildRequest } from "./convert.js";
 import { parseSSE } from "./sse.js";
 
 export { ollamaModel } from "./ollama.js";
+export type { OllamaConfig } from "./ollama.js";
 export { openaiModel } from "./openai.js";
 
 // Internal wire chunk shape from OpenAI-compatible streaming responses.
