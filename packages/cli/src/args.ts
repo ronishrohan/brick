@@ -9,6 +9,20 @@ export interface ParsedArgs {
     help: boolean;
 }
 
+export class ArgsError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ArgsError";
+    }
+}
+
+function requireValue(flag: string, value: string | undefined): string {
+    if (value === undefined || value.trim() === "" || value.startsWith("-")) {
+        throw new ArgsError(`${flag} requires a value`);
+    }
+    return value;
+}
+
 export function parseArgs(argv: string[]): ParsedArgs {
     let help = false;
     let model: string | undefined;
@@ -24,17 +38,17 @@ export function parseArgs(argv: string[]): ParsedArgs {
         if (arg === "--help" || arg === "-h") {
             help = true;
         } else if (arg === "--model") {
-            model = argv[++i];
+            model = requireValue("--model", argv[++i]);
         } else if (arg === "--cwd") {
-            cwd = argv[++i];
+            cwd = requireValue("--cwd", argv[++i]);
         } else if (arg === "--session") {
-            session = argv[++i];
+            session = requireValue("--session", argv[++i]);
         } else if (arg.startsWith("--model=")) {
-            model = arg.slice("--model=".length);
+            model = requireValue("--model", arg.slice("--model=".length));
         } else if (arg.startsWith("--cwd=")) {
-            cwd = arg.slice("--cwd=".length);
+            cwd = requireValue("--cwd", arg.slice("--cwd=".length));
         } else if (arg.startsWith("--session=")) {
-            session = arg.slice("--session=".length);
+            session = requireValue("--session", arg.slice("--session=".length));
         } else if (!arg.startsWith("-")) {
             positional.push(arg);
         }
