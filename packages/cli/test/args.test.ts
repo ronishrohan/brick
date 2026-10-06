@@ -2,7 +2,7 @@
  * Tests for parseArgs.
  */
 import assert from "node:assert/strict";
-import { parseArgs } from "../src/args.js";
+import { ArgsError, parseArgs } from "../src/args.js";
 
 // brick "do a thing" → oneshot with task
 {
@@ -103,4 +103,27 @@ import { parseArgs } from "../src/args.js";
     assert.equal(result.session, "s1");
     assert.equal(result.help, false);
     console.log("ok: all flags together parsed correctly");
+}
+
+// value flags require a value
+for (const argv of [
+    ["--model"],
+    ["--cwd"],
+    ["--session"],
+    ["--model", "--cwd", "/tmp"],
+    ["--model="],
+    ["--cwd=  "],
+    ["--session="],
+]) {
+    assert.throws(() => parseArgs(argv), ArgsError, `expected ArgsError for ${argv.join(" ")}`);
+}
+console.log("ok: value flags without a value throw ArgsError");
+
+// --flag=value form still works
+{
+    const result = parseArgs(["--model=ollama/x", "--cwd=/tmp", "--session=s1"]);
+    assert.equal(result.model, "ollama/x");
+    assert.equal(result.cwd, "/tmp");
+    assert.equal(result.session, "s1");
+    console.log("ok: --flag=value form parsed");
 }
