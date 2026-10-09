@@ -17,7 +17,8 @@ export const FAKE_MODEL: Model = {
 // A scripted response the fake model will return.
 export type FakeResponse =
     | { type: "text"; text: string }
-    | { type: "toolCall"; name: string; arguments: Record<string, unknown>; id?: string };
+    | { type: "toolCall"; name: string; arguments: Record<string, unknown>; id?: string }
+    | { type: "error"; message: string; reason?: "error" | "aborted" };
 
 /**
  * Creates a fake stream function that returns scripted responses in order.
@@ -42,7 +43,7 @@ export function makeFakeStream(responses: FakeResponse[]): StreamFn {
                     stopReason: "stop",
                 };
                 yield { type: "done", reason: "stop", message: finalMessage };
-            } else {
+            } else if (response.type === "toolCall") {
                 const toolCall = {
                     type: "toolCall" as const,
                     id: response.id ?? `call-${callIndex}`,
@@ -56,6 +57,18 @@ export function makeFakeStream(responses: FakeResponse[]): StreamFn {
                     stopReason: "toolUse",
                 };
                 yield { type: "done", reason: "toolUse", message: finalMessage };
+            } else {
+                finalMessage = {
+                    role: "assistant",
+                    content: [],
+                    stopReason: response.reason ?? "error",
+                    errorMessage: response.message,
+                };
+                yield {
+                    type: "error",
+                    reason: response.reason ?? "error",
+                    message: finalMessage,
+                };
             }
         }
 

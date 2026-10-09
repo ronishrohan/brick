@@ -49,7 +49,7 @@ export function stream(model: Model, context: Context, options?: StreamOptions):
                 streamError = err;
                 hasStreamError = true;
                 yield { type: "error", reason: aborted ? "aborted" : "error", message };
-                throw err;
+                return;
             }
         }
     }

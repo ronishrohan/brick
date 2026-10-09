@@ -81,7 +81,7 @@ await withServer(
         if (first.value?.type === "error") {
             assert.equal(first.value.message.errorMessage, "HTTP 503: unavailable");
         }
-        await assert.rejects(iterator.next(), /HTTP 503: unavailable/);
+        assert.equal((await iterator.next()).done, true);
         await assert.rejects(handle.result(), /HTTP 503: unavailable/);
     }
 );
